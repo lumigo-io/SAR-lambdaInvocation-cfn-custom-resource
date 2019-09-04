@@ -9,7 +9,7 @@
     "test:lint": "eslint .",
     "prettier:ci": "prettier --list-different \"src/**/*.js\"",
     "prettier:fix": "prettier --write \"./src/**/*.js\"",
-    "package": "sam package --template-file template.yml --output-template-file packaged.yml --s3-bucket sar-propagate-cfn-tags",
+    "package": "sam package --template-file template.yml --output-template-file packaged.yml --s3-bucket sar-lambda-invocation-cfn-custom-resource",
     "publish": "sam publish --template packaged.yml --region us-east-1"
   },
   "repository": {
