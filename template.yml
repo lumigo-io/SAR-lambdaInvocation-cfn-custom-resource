@@ -1,0 +1,37 @@
+AWSTemplateFormatVersion: 2010-09-09
+Transform: AWS::Serverless-2016-10-31
+
+Metadata:
+  AWS::ServerlessRepo::Application:
+    Name: lambda-invocation-cfn-custom-resource
+    Description: CloudFormation custom resource for invoking a Lambda function during deployment
+    Author: Lumigo
+    SpdxLicenseId: Apache-2.0
+    LicenseUrl: LICENSE
+    ReadmeUrl: README.md
+    Labels: ['lambda', 'cloudformation', 'devops', 'customre-source']
+    HomePageUrl: https://github.com/lumigo-io/SAR-lambdaInvocation-cfn-custom-resource.git
+    SemanticVersion: 1.0.0
+    SourceCodeUrl: https://github.com/lumigo-io/SAR-lambdaInvocation-cfn-custom-resource.git
+
+Parameters:
+  InvocationTargetArn:
+    Type: String
+    Description: ARN of the Lambda function to invoke
+
+Resources:
+  LambdaInvocationCustomResource:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/functions/lambda-invocation.handler
+      Runtime: nodejs8.10
+      MemorySize: 128
+      Timeout: 900
+      Environment:
+        Variables:
+          LOG_LEVEL: INFO
+      Policies:
+        - Statement:
+            Effect: Allow
+            Action: lambda:InvokeFunction
+            Resource: !Ref InvocationTargetArn
