@@ -13,7 +13,7 @@ beforeEach(() => {
 	mockInvoke.mockReturnValueOnce({
 		promise: () => Promise.resolve({})
 	});
-  
+
 	// eslint-disable-next-line no-unused-vars
 	mockRequest.mockImplementation((_options, cb) => {
 		return {
@@ -41,15 +41,15 @@ describe("lambda-invocation", () => {
 			Payload: payload
 		}
 	});
-  
-	const thenLambdaIsInvoked = (functionName) => {
+
+	const thenLambdaIsInvoked = functionName => {
 		expect(mockInvoke).toBeCalledWith({
 			FunctionName: `arn:aws:lambda:us-east-1:374852340823:function:${functionName}`,
 			InvocationType: "RequestResponse",
 			Payload: "{}"
 		});
 	};
-  
+
 	const thenResponseUrlIsCalled = () => {
 		expect(mockRequest).toBeCalledWith(
 			expect.objectContaining({
@@ -61,14 +61,15 @@ describe("lambda-invocation", () => {
 					"Content-Type": "",
 					"Content-Length": expect.any(Number)
 				}
-			}), 
-			expect.any(Function));
+			}),
+			expect.any(Function)
+		);
 	};
 
 	test("Create events would trigger Lambda invocation", async () => {
 		const handler = require("./lambda-invocation").handler;
 		await handler(genEvent("Create", "my-function"));
-    
+
 		thenLambdaIsInvoked("my-function");
 		thenResponseUrlIsCalled();
 	});
@@ -76,7 +77,7 @@ describe("lambda-invocation", () => {
 	test("Update events would trigger Lambda invocation", async () => {
 		const handler = require("./lambda-invocation").handler;
 		await handler(genEvent("Update", "my-function"));
-    
+
 		thenLambdaIsInvoked("my-function");
 		thenResponseUrlIsCalled();
 	});
@@ -84,17 +85,18 @@ describe("lambda-invocation", () => {
 	test("Delete events would not trigger Lambda invocation", async () => {
 		const handler = require("./lambda-invocation").handler;
 		await handler(genEvent("Delete", "my-function"));
-    
+
 		expect(mockInvoke).not.toBeCalled();
 		thenResponseUrlIsCalled();
 	});
-  
+
 	test("Should error for unsupported events", async () => {
 		const handler = require("./lambda-invocation").handler;
-		await expect(handler(genEvent("Dance", "my-function"))).rejects
-			.toEqual(new Error("unexpected RequestType [Dance]"));
+		await expect(handler(genEvent("Dance", "my-function"))).rejects.toEqual(
+			new Error("unexpected RequestType [Dance]")
+		);
 	});
-  
+
 	test("Should error if FunctionName is not an ARN", async () => {
 		const handler = require("./lambda-invocation").handler;
 		const event = {
@@ -109,7 +111,7 @@ describe("lambda-invocation", () => {
 			}
 		};
 		await handler(event);
-    
+
 		expect(mockInvoke).not.toBeCalled();
 		thenResponseUrlIsCalled();
 	});

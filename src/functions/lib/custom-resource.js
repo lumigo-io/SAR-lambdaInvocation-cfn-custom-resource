@@ -45,23 +45,21 @@ const respond = async (event, status, id, reason) => {
 
 		request.write(payload);
 		request.end();
-	});  
+	});
 };
 
-module.exports = (schema, createFn, updateFn, deleteFn) => 
-	async (event) => {
-		delete event.ResourceProperties.ServiceToken;
-		const { error, value } = Joi.validate(
-			event.ResourceProperties, schema, { allowUnknown: true });
+module.exports = (schema, createFn, updateFn, deleteFn) => async event => {
+	delete event.ResourceProperties.ServiceToken;
+	const { error, value } = Joi.validate(event.ResourceProperties, schema, { allowUnknown: true });
 
-		if (error) {
-			log.error("failed validation", error);
-			await respond(event, "FAILED", "Failure", error.message);
-			return;
-		}
+	if (error) {
+		log.error("failed validation", error);
+		await respond(event, "FAILED", "Failure", error.message);
+		return;
+	}
 
-		const apply = async (event, value) => {
-			switch (event.RequestType) {
+	const apply = async (event, value) => {
+		switch (event.RequestType) {
 			case "Create":
 				return await createFn(value);
 			case "Update":
@@ -70,16 +68,16 @@ module.exports = (schema, createFn, updateFn, deleteFn) =>
 				return await deleteFn(event.PhysicalResourceId);
 			default:
 				throw new Error(`unexpected RequestType [${event.RequestType}]`);
-			}
-		};
-
-		try {
-			const id = await apply(event, value);
-			await respond(event, "SUCCESS", id);
-			log.info("custom resource is created", { id });
-		} catch (error) {
-			log.error("failed to create custom Lambda invocation resource...", error);
-			await respond(event, "FAILED", "Failure", error.message);
-			throw error;
 		}
 	};
+
+	try {
+		const id = await apply(event, value);
+		await respond(event, "SUCCESS", id);
+		log.info("custom resource is created", { id });
+	} catch (error) {
+		log.error("failed to create custom Lambda invocation resource...", error);
+		await respond(event, "FAILED", "Failure", error.message);
+		throw error;
+	}
+};
