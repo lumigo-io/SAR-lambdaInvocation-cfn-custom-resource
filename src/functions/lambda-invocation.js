@@ -22,11 +22,11 @@ const invokeFunction = async ({ FunctionName, Payload }) => {
 };
 
 const onCreate = async invocation => {
-	await invokeFunction(invocation);
+	return await invokeFunction(invocation);
 };
 
 const onUpdate = async (_physicalResourceId, invocation) => {
-	await invokeFunction(invocation);
+	return await invokeFunction(invocation);
 };
 
 const onDelete = async physicalResourceId => physicalResourceId;
