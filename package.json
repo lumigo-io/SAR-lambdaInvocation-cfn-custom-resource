@@ -1,0 +1,64 @@
+{
+  "name": "sar-lambdainvocation-cfn-custom-resource",
+  "version": "1.0.0",
+  "description": "CloudFormation custom resource for invoking a Lambda function",
+  "main": "src/functions/lambda-invocation.js",
+  "scripts": {
+    "codecov": "codecov",
+    "test": "jest",
+    "test:lint": "eslint .",
+    "prettier:ci": "prettier --list-different \"src/**/*.js\"",
+    "prettier:fix": "prettier --write \"./src/**/*.js\"",
+    "package": "sam package --template-file template.yml --output-template-file packaged.yml --s3-bucket sar-propagate-cfn-tags",
+    "publish": "sam publish --template packaged.yml --region us-east-1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lumigo-io/SAR-lambdaInvocation-cfn-custom-resource.git"
+  },
+  "keywords": [],
+  "author": "Lumigo LTD (https://lumigo.io)",
+  "license": "Apache 2",
+  "bugs": {
+    "url": "https://github.com/lumigo-io/SAR-lambdaInvocation-cfn-custom-resource/issues"
+  },
+  "homepage": "https://github.com/lumigo-io/SAR-lambdaInvocation-cfn-custom-resource#readme",
+  "dependencies": {
+    "@dazn/lambda-powertools-logger": "^1.9.0",
+    "@hapi/joi": "^15.1.1",
+    "aws-sdk": "^2.522.0"
+  },
+  "devDependencies": {
+    "jest": "^24.9.0",
+    "@commitlint/cli": "^8.1.0",
+    "@commitlint/config-conventional": "^8.0.0",
+    "codecov": "^3.5.0",
+    "coveralls": "^3.0.2",
+    "eslint": "^5.13.0",
+    "eslint-config-prettier": "^6.0.0",
+    "eslint-config-standard": "^13.0.1",
+    "eslint-plugin-import": "^2.16.0",
+    "eslint-plugin-node": "^9.1.0",
+    "eslint-plugin-promise": "^4.0.1",
+    "eslint-plugin-standard": "^4.0.0",
+    "husky": "^3.0.0",
+    "lint-staged": "^9.1.0",
+    "prettier": "^1.18.2"
+  },
+  "prettier": {
+    "useTabs": true,
+    "tabWidth": 4,
+    "printWidth": 100
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged",
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+    }
+  },
+  "lint-staged": {
+    "*.js": [
+      "eslint"
+    ]
+  }
+}
