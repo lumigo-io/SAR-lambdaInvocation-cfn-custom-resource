@@ -1,6 +1,6 @@
 # lambdaInvocation-cfn-custom-resource
 
-[![Version](https://img.shields.io/badge/semver-1.0.1-blue)](template.yml)
+[![Version](https://img.shields.io/badge/semver-1.1.0-blue)](template.yml)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 [![CircleCI](https://circleci.com/gh/lumigo-io/SAR-lambdaInvocation-cfn-custom-resource.svg?style=svg)](https://circleci.com/gh/lumigo-io/SAR-lambdaInvocation-cfn-custom-resource)
 [![codecov](https://codecov.io/gh/lumigo-io/SAR-lambdaInvocation-cfn-custom-resource/branch/master/graph/badge.svg)](https://codecov.io/gh/lumigo-io/SAR-lambdaInvocation-cfn-custom-resource)
@@ -31,8 +31,18 @@ InvokePropagateAll:
     - LambdaInvocationCustomResource
   Properties:
     ServiceToken: !GetAtt LambdaInvocationCustomResource.Outputs.FunctionArn
-    FunctionName: !Ref PropagateAll
-    Payload: {}
+    FunctionName: !Ref PropagateAll # REQUIRED
+    # OPTIONAL, payload for the invocation
+    # Payload: Object
+    # OPTIONAL, specific alias or version to invoke
+    # Qualifier: String
+    # OPTIONAL, can be either "RequestResponse" or "Event". Defaults to "RequestResponse".
+    # InvocationType: RequestResponse | Event
+    # OPTIONAL, context about the calling client to be passed to the invocation
+    # ClientContext: String
+    # OPTIONAL, only available for "RequestResponse" invocation type, whether to rethrow
+    # any errors from the invocation. Defaults to true.
+    # Rethrow: true | false
 ```
 
 To do the same via CloudFormation or the Serverless framework, you need to first add the following `Transform`:
