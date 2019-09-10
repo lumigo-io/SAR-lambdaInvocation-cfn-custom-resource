@@ -4,21 +4,23 @@ const customResource = require("./lib/custom-resource");
 const schema = require("./lambda-invocation.schema");
 const log = require("@dazn/lambda-powertools-logger");
 
-const invokeFunction = async ({ FunctionName, Payload }) => {
-	log.debug("invoking Lambda function...", { functionName: FunctionName });
+const invokeFunction = async (invocation) => {
+	log.debug("invoking Lambda function...", { functionName: invocation.FunctionName });
 	const resp = await lambda
 		.invoke({
-			FunctionName,
-			InvocationType: "RequestResponse",
-			Payload: JSON.stringify(Payload)
+			FunctionName: invocation.FunctionName,
+			InvocationType: invocation.InvocationType,
+			Payload: JSON.stringify(invocation.Payload),
+			ClientContext: invocation.ClientContext,
+			Qualifier: invocation.Qualifier
 		})
 		.promise();
 
-	if (resp.FunctionError) {
+	if (resp.FunctionError && invocation.Rethrow === true) {
 		throw new Error(resp.FunctionError);
 	}
 
-	return FunctionName;
+	return invocation.FunctionName;
 };
 
 const onCreate = async invocation => {
