@@ -1,5 +1,6 @@
 # lambdaInvocation-cfn-custom-resource
 
+[![Version](https://img.shields.io/badge/semver-1.0.1-blue)](template.yml)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 [![CircleCI](https://circleci.com/gh/lumigo-io/SAR-lambdaInvocation-cfn-custom-resource.svg?style=svg)](https://circleci.com/gh/lumigo-io/SAR-lambdaInvocation-cfn-custom-resource)
 [![codecov](https://codecov.io/gh/lumigo-io/SAR-lambdaInvocation-cfn-custom-resource/branch/master/graph/badge.svg)](https://codecov.io/gh/lumigo-io/SAR-lambdaInvocation-cfn-custom-resource)
