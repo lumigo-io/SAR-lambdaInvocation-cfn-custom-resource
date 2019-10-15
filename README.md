@@ -1,6 +1,6 @@
 # lambdaInvocation-cfn-custom-resource
 
-[![Version](https://img.shields.io/badge/semver-1.1.0-blue)](template.yml)
+[![Version](https://img.shields.io/badge/semver-1.2.0-blue)](template.yml)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 [![CircleCI](https://circleci.com/gh/lumigo-io/SAR-lambdaInvocation-cfn-custom-resource.svg?style=svg)](https://circleci.com/gh/lumigo-io/SAR-lambdaInvocation-cfn-custom-resource)
 [![codecov](https://codecov.io/gh/lumigo-io/SAR-lambdaInvocation-cfn-custom-resource/branch/master/graph/badge.svg)](https://codecov.io/gh/lumigo-io/SAR-lambdaInvocation-cfn-custom-resource)
@@ -43,6 +43,10 @@ InvokePropagateAll:
     # OPTIONAL, only available for "RequestResponse" invocation type, whether to rethrow
     # any errors from the invocation. Defaults to true.
     # Rethrow: true | false
+    # OPTIONAL, when to invoke the target function. Can be a string - "Create", "Update", "Delete"
+    # or "All". Or it can be a string array containing "Create", "Update" or "Delete".
+    # Default is to invoke on both "Create" and "Update".
+    # When: Create | Update | Delete | All | []
 ```
 
 To do the same via CloudFormation or the Serverless framework, you need to first add the following `Transform`:
