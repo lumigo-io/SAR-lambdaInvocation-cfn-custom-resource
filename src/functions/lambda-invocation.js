@@ -4,7 +4,7 @@ const customResource = require("./lib/custom-resource");
 const schema = require("./lambda-invocation.schema");
 const log = require("@dazn/lambda-powertools-logger");
 
-const invokeFunction = async (invocation) => {
+const invokeFunction = async invocation => {
 	log.debug("invoking Lambda function...", { functionName: invocation.FunctionName });
 	const resp = await lambda
 		.invoke({
