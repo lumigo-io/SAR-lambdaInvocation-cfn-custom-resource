@@ -41,119 +41,135 @@ describe("schema validation", () => {
 		}
 	};
 
-	const genEvent = (props) => _.merge(_.cloneDeep(defaultEvent), { ResourceProperties: props });
+	const genEvent = props => _.merge(_.cloneDeep(defaultEvent), { ResourceProperties: props });
 
 	test("FunctionName is required", async () => {
 		const handler = require("./lambda-invocation").handler;
 		await handler(genEvent());
-    
+
 		expect(mockInvoke).not.toBeCalled();
 		thenResponseUrlIsCalled();
 	});
 
 	test("Payload is JSON serialized", async () => {
 		const handler = require("./lambda-invocation").handler;
-		await handler(genEvent({ 
-			FunctionName: "my-function", 
-			InvocationType: "RequestResponse",
-			Payload: { Foo: "Bar" }
-		}));
-    
-		thenLambdaIsInvokedWith("my-function", { 
+		await handler(
+			genEvent({
+				FunctionName: "my-function",
+				InvocationType: "RequestResponse",
+				Payload: { Foo: "Bar" }
+			})
+		);
+
+		thenLambdaIsInvokedWith("my-function", {
 			InvocationType: "RequestResponse",
 			Payload: '{"Foo":"Bar"}'
 		});
 		thenResponseUrlIsCalled();
 	});
-  
+
 	test("InvocationType defaults to RequestResponse", async () => {
 		const handler = require("./lambda-invocation").handler;
-		await handler(genEvent({ 
-			FunctionName: "my-function"
-		}));
-    
-		thenLambdaIsInvokedWith("my-function", { 
+		await handler(
+			genEvent({
+				FunctionName: "my-function"
+			})
+		);
+
+		thenLambdaIsInvokedWith("my-function", {
 			InvocationType: "RequestResponse"
 		});
 		thenResponseUrlIsCalled();
 	});
-  
+
 	test("InvocationType can also be 'Event'", async () => {
 		const handler = require("./lambda-invocation").handler;
-		await handler(genEvent({ 
-			FunctionName: "my-function",
+		await handler(
+			genEvent({
+				FunctionName: "my-function",
+				InvocationType: "Event"
+			})
+		);
+
+		thenLambdaIsInvokedWith("my-function", {
 			InvocationType: "Event"
-		}));
-    
-		thenLambdaIsInvokedWith("my-function", { 
-			InvocationType: "Event" 
 		});
 		thenResponseUrlIsCalled();
 	});
-  
+
 	test("InvocationType can only be 'Event' or 'RequestResponse'", async () => {
 		const handler = require("./lambda-invocation").handler;
-		await handler(genEvent({ 
-			FunctionName: "my-function",
-			InvocationType: "DryRun"
-		}));
-    
+		await handler(
+			genEvent({
+				FunctionName: "my-function",
+				InvocationType: "DryRun"
+			})
+		);
+
 		expect(mockInvoke).not.toBeCalled();
 		thenResponseUrlIsCalled();
 	});
-  
+
 	test("ClientContext is passed to the invocation", async () => {
 		const handler = require("./lambda-invocation").handler;
-		await handler(genEvent({ 
-			FunctionName: "my-function",
-			ClientContext: "foo"
-		}));
-    
-		thenLambdaIsInvokedWith("my-function", { 
+		await handler(
+			genEvent({
+				FunctionName: "my-function",
+				ClientContext: "foo"
+			})
+		);
+
+		thenLambdaIsInvokedWith("my-function", {
 			InvocationType: "RequestResponse",
 			ClientContext: "foo"
 		});
 		thenResponseUrlIsCalled();
 	});
-  
+
 	test("Qualifier is passed to the invocation", async () => {
 		const handler = require("./lambda-invocation").handler;
-		await handler(genEvent({ 
-			FunctionName: "my-function",
-			Qualifier: "alias"
-		}));
-    
-		thenLambdaIsInvokedWith("my-function", { 
+		await handler(
+			genEvent({
+				FunctionName: "my-function",
+				Qualifier: "alias"
+			})
+		);
+
+		thenLambdaIsInvokedWith("my-function", {
 			InvocationType: "RequestResponse",
 			Qualifier: "alias"
 		});
 		thenResponseUrlIsCalled();
 	});
-  
+
 	test("Rethrow is allowed when InvocationType is 'RequestResponse'", async () => {
 		const handler = require("./lambda-invocation").handler;
-		await handler(genEvent({ 
-			FunctionName: "my-function",
-			Rethrow: true
-		}));
-    
-		thenLambdaIsInvokedWith("my-function", { 
+		await handler(
+			genEvent({
+				FunctionName: "my-function",
+				Rethrow: true
+			})
+		);
+
+		thenLambdaIsInvokedWith("my-function", {
 			InvocationType: "RequestResponse"
 		});
 		thenResponseUrlIsCalled();
 	});
-  
+
 	test("Rethrow is not allowed when InvocationType is not 'RequestResponse'", async () => {
 		const handler = require("./lambda-invocation").handler;
-		await handler(genEvent({ 
-			FunctionName: "my-function",
-			InvocationType: "Event",
-			Rethrow: true
-		}));
-    
+		await handler(
+			genEvent({
+				FunctionName: "my-function",
+				InvocationType: "Event",
+				Rethrow: true
+			})
+		);
+
 		expect(mockInvoke).not.toBeCalled();
 		thenResponseUrlIsCalled();
-	});
+	});  
 });
 
 describe("lambda-invocation", () => {
@@ -187,7 +203,7 @@ describe("lambda-invocation", () => {
 			new Error("unexpected RequestType [Dance]")
 		);
 	});
-  
+
 	test("Should rethrow errors if Rethrow is true", async () => {
 		const handler = require("./lambda-invocation").handler;
 		const event = {
@@ -201,7 +217,7 @@ describe("lambda-invocation", () => {
 				Rethrow: true
 			}
 		};
-    
+
 		mockInvoke.mockReset();
 		mockInvoke.mockReturnValueOnce({
 			promise: () => Promise.reject(new Error("boom"))
@@ -210,7 +226,7 @@ describe("lambda-invocation", () => {
 
 		thenResponseUrlIsCalled();
 	});
-  
+
 	test("Should swallow errors if Rethrow is false", async () => {
 		const handler = require("./lambda-invocation").handler;
 		const event = {
@@ -224,13 +240,73 @@ describe("lambda-invocation", () => {
 				Rethrow: false
 			}
 		};
-    
+
 		mockInvoke.mockReset();
 		mockInvoke.mockReturnValueOnce({
 			promise: () => Promise.reject(new Error("boom"))
 		});
 		await expect(handler(event)).resolves;
 
+		thenResponseUrlIsCalled();
+	});
+  
+	test("Should invoke on delete if When is All", async () => {
+		const handler = require("./lambda-invocation").handler;
+		const event = {
+			ResourceType: "Custom::LambdaInvocation",
+			RequestType: "Delete",
+			PhysicalResourceId: "1234",
+			ResponseURL: "https://theburningmonk.com",
+			ResourceProperties: {
+				ServiceToken: "test-token",
+				FunctionName: "my-function",
+				When: "All"
+			}
+		};
+
+		await handler(event);
+
+		expect(mockInvoke).toBeCalled();
+		thenResponseUrlIsCalled();
+	});
+  
+	test("Should invoke on delete if When is Delete", async () => {
+		const handler = require("./lambda-invocation").handler;
+		const event = {
+			ResourceType: "Custom::LambdaInvocation",
+			RequestType: "Delete",
+			PhysicalResourceId: "1234",
+			ResponseURL: "https://theburningmonk.com",
+			ResourceProperties: {
+				ServiceToken: "test-token",
+				FunctionName: "my-function",
+				When: "Delete"
+			}
+		};
+
+		await handler(event);
+
+		expect(mockInvoke).toBeCalled();
+		thenResponseUrlIsCalled();
+	});
+  
+	test("Should invoke on delete if When is an array containing Delete", async () => {
+		const handler = require("./lambda-invocation").handler;
+		const event = {
+			ResourceType: "Custom::LambdaInvocation",
+			RequestType: "Delete",
+			PhysicalResourceId: "1234",
+			ResponseURL: "https://theburningmonk.com",
+			ResourceProperties: {
+				ServiceToken: "test-token",
+				FunctionName: "my-function",
+				When: ["Delete"]
+			}
+		};
+
+		await handler(event);
+
+		expect(mockInvoke).toBeCalled();
 		thenResponseUrlIsCalled();
 	});
 });
