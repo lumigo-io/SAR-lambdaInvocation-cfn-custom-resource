@@ -169,7 +169,7 @@ describe("schema validation", () => {
 
 		expect(mockInvoke).not.toBeCalled();
 		thenResponseUrlIsCalled();
-	});
+	});  
 });
 
 describe("lambda-invocation", () => {
@@ -247,6 +247,66 @@ describe("lambda-invocation", () => {
 		});
 		await expect(handler(event)).resolves;
 
+		thenResponseUrlIsCalled();
+	});
+  
+	test("Should invoke on delete if When is All", async () => {
+		const handler = require("./lambda-invocation").handler;
+		const event = {
+			ResourceType: "Custom::LambdaInvocation",
+			RequestType: "Delete",
+			PhysicalResourceId: "1234",
+			ResponseURL: "https://theburningmonk.com",
+			ResourceProperties: {
+				ServiceToken: "test-token",
+				FunctionName: "my-function",
+				When: "All"
+			}
+		};
+
+		await handler(event);
+
+		expect(mockInvoke).toBeCalled();
+		thenResponseUrlIsCalled();
+	});
+  
+	test("Should invoke on delete if When is Delete", async () => {
+		const handler = require("./lambda-invocation").handler;
+		const event = {
+			ResourceType: "Custom::LambdaInvocation",
+			RequestType: "Delete",
+			PhysicalResourceId: "1234",
+			ResponseURL: "https://theburningmonk.com",
+			ResourceProperties: {
+				ServiceToken: "test-token",
+				FunctionName: "my-function",
+				When: "Delete"
+			}
+		};
+
+		await handler(event);
+
+		expect(mockInvoke).toBeCalled();
+		thenResponseUrlIsCalled();
+	});
+  
+	test("Should invoke on delete if When is an array containing Delete", async () => {
+		const handler = require("./lambda-invocation").handler;
+		const event = {
+			ResourceType: "Custom::LambdaInvocation",
+			RequestType: "Delete",
+			PhysicalResourceId: "1234",
+			ResponseURL: "https://theburningmonk.com",
+			ResourceProperties: {
+				ServiceToken: "test-token",
+				FunctionName: "my-function",
+				When: ["Delete"]
+			}
+		};
+
+		await handler(event);
+
+		expect(mockInvoke).toBeCalled();
 		thenResponseUrlIsCalled();
 	});
 });

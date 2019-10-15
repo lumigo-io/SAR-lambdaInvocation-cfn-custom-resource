@@ -65,7 +65,7 @@ module.exports = (schema, createFn, updateFn, deleteFn) => async event => {
 			case "Update":
 				return await updateFn(event.PhysicalResourceId, value);
 			case "Delete":
-				return await deleteFn(event.PhysicalResourceId);
+				return await deleteFn(event.PhysicalResourceId, value);
 			default:
 				throw new Error(`unexpected RequestType [${event.RequestType}]`);
 		}

@@ -12,7 +12,15 @@ const LambdaInvocation = Joi.object().keys({
 		is: "RequestResponse",
 		then: Joi.valid(true, false).default(true),
 		otherwise: Joi.valid(null)
-	})
+	}),
+	When: Joi.alternatives()
+		.try(
+			Joi.string()
+				.valid("Create", "Update", "Delete", "All")
+				.default("All"),
+			Joi.array().items(Joi.string().valid("Create", "Update", "Delete"))
+		)
+		.default(["Create", "Update"])
 });
 
 module.exports = LambdaInvocation;
