@@ -11,7 +11,7 @@ Metadata:
     ReadmeUrl: README.md
     Labels: ['lambda', 'cloudformation', 'devops', 'custom-resource']
     HomePageUrl: https://github.com/lumigo-io/SAR-lambdaInvocation-cfn-custom-resource.git
-    SemanticVersion: 1.2.0
+    SemanticVersion: 1.3.0
     SourceCodeUrl: https://github.com/lumigo-io/SAR-lambdaInvocation-cfn-custom-resource.git
 
 Resources:
@@ -19,7 +19,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       Handler: src/functions/lambda-invocation.handler
-      Runtime: nodejs8.10
+      Runtime: nodejs10.x
       MemorySize: 128
       Timeout: 900
       Environment:
