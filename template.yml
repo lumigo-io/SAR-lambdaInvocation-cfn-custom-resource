@@ -19,7 +19,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       Handler: src/functions/lambda-invocation.handler
-      Runtime: nodejs10.x
+      Runtime: nodejs14.x
       MemorySize: 128
       Timeout: 900
       Environment:
